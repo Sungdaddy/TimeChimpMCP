@@ -28,8 +28,8 @@ A Model Context Protocol (MCP) server for TimeChimp time tracking integration. T
 
 2. **Clone the repository:**
 ```cmd
-git clone https://github.com/your-username/timechimp-mcp-server.git
-cd timechimp-mcp-server
+git clone https://github.com/Sungdaddy/TimeChimpMCP.git
+cd TimeChimpMCP
 ```
 
 3. **Run the Windows installer:**
@@ -60,8 +60,8 @@ scripts\test-with-inspector.bat
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/timechimp-mcp-server.git
-cd timechimp-mcp-server
+git clone https://github.com/Sungdaddy/TimeChimpMCP.git
+cd TimeChimpMCP
 ```
 
 2. Install the package:
@@ -83,8 +83,8 @@ nano .env  # or your preferred editor
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd timechimp-mcp-server
+git clone https://github.com/Sungdaddy/TimeChimpMCP.git
+cd TimeChimpMCP
 ```
 
 2. Install the package:

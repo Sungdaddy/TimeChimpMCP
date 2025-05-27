@@ -1,32 +1,21 @@
 {
   "mcpServers": {
     "timechimp-local": {
-      "command": "python3",
+      "command": "python",
       "args": ["-m", "timechimp_mcp_server.main"],
       "env": {
-        "TIMECHIMP_API_KEY": "your-api-key-here",
+        "TIMECHIMP_API_KEY": "your_api_key_here",
         "TIMECHIMP_BASE_URL": "https://v2.api.timechimp.com",
         "LOG_LEVEL": "INFO"
       }
     },
-    "timechimp-debug": {
-      "command": "python3",
-      "args": ["-m", "timechimp_mcp_server.main"],
+    "timechimp-installed": {
+      "command": "timechimp-mcp-server",
       "env": {
-        "TIMECHIMP_API_KEY": "your-api-key-here",
+        "TIMECHIMP_API_KEY": "your_api_key_here",
         "TIMECHIMP_BASE_URL": "https://v2.api.timechimp.com",
-        "LOG_LEVEL": "DEBUG"
+        "LOG_LEVEL": "INFO"
       }
-    },
-    "timechimp-startup-script": {
-      "command": "./start_server.sh",
-      "args": [],
-      "env": {}
-    },
-    "timechimp-replit-http": {
-      "type": "sse",
-      "url": "https://your-repl-name.your-username.repl.co/mcp",
-      "note": "Replace with your actual Replit URL"
     }
   }
 } 
