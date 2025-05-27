@@ -1,5 +1,5 @@
 # Environment variables (contains API keys)
-.env
+# Note: .env is tracked with placeholder values, but .env.local and others are ignored
 .env.local
 .env.*.local
 

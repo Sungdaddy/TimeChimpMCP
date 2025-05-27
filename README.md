@@ -18,7 +18,68 @@ A Model Context Protocol (MCP) server for TimeChimp time tracking integration. T
 - TimeChimp account with API access
 - TimeChimp API key
 
-### Install from Source
+### Windows Installation (Recommended)
+
+1. **Get your TimeChimp API key first:**
+   - Log in to your TimeChimp account
+   - Go to Settings > API
+   - Generate a new API key
+   - Copy the key (you'll paste it during installation)
+
+2. **Clone the repository:**
+```cmd
+git clone https://github.com/your-username/timechimp-mcp-server.git
+cd timechimp-mcp-server
+```
+
+3. **Run the Windows installer:**
+```cmd
+install-windows.bat
+```
+*The installer will:*
+- ✅ Check Python and pip installation
+- ✅ Check Node.js for MCP Inspector (optional)
+- ✅ Install all dependencies automatically
+- ✅ **Prompt you to paste your API key directly**
+- ✅ **Automatically configure the .env file**
+- ✅ Optionally launch MCP Inspector immediately
+
+4. **Test the installation (optional):**
+```cmd
+test-installation.bat
+```
+
+5. **Start using the server:**
+```cmd
+scripts\start-server.bat
+# or test with MCP Inspector
+scripts\test-with-inspector.bat
+```
+
+### Linux/macOS Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/timechimp-mcp-server.git
+cd timechimp-mcp-server
+```
+
+2. Install the package:
+```bash
+pip install -e .
+```
+
+3. Edit your API key:
+```bash
+nano .env  # or your preferred editor
+```
+
+4. Start the server:
+```bash
+./scripts/start-server.sh
+```
+
+### Install from Source (Manual)
 
 1. Clone the repository:
 ```bash
@@ -44,19 +105,30 @@ pip install -e ".[dev]"
 
 ### Environment Variables
 
-Create a `.env` file in your project directory or set the following environment variables:
+The `.env` file is already included in the repository. Simply edit it and replace the placeholder with your actual API key:
 
 ```bash
-TIMECHIMP_API_KEY=your_timechimp_api_key_here
-TIMECHIMP_BASE_URL=https://api.timechimp.com/v1  # Optional, defaults to this URL
+# Edit the .env file
+nano .env
+# or use your preferred editor: code .env, vim .env, etc.
 ```
+
+Replace `YOUR_API_KEY_HERE` with your actual TimeChimp API key:
+
+```bash
+TIMECHIMP_API_KEY=your_actual_api_key_goes_here
+TIMECHIMP_BASE_URL=https://v2.api.timechimp.com
+LOG_LEVEL=INFO
+```
+
+**Important:** Replace `YOUR_API_KEY_HERE` with your real TimeChimp API key.
 
 ### Getting Your TimeChimp API Key
 
 1. Log in to your TimeChimp account
 2. Navigate to Settings > API
 3. Generate a new API key
-4. Copy the key and set it as the `TIMECHIMP_API_KEY` environment variable
+4. Copy the key and replace `YOUR_API_KEY_HERE` in your `.env` file
 
 ## Usage
 
@@ -181,13 +253,37 @@ Follow the assistant's documentation for adding MCP servers, using:
 
 ## Testing and Debugging
 
+### Quick Start Scripts
+
+**Windows:**
+```cmd
+# Start the MCP server
+scripts\start-server.bat
+
+# Test with MCP Inspector
+scripts\test-with-inspector.bat
+
+# Or use PowerShell versions
+scripts\start-server.ps1
+scripts\test-with-inspector.ps1
+```
+
+**Linux/macOS:**
+```bash
+# Start the MCP server
+./scripts/start-server.sh
+
+# Test with MCP Inspector
+./scripts/test-with-inspector.sh
+```
+
 ### MCP Inspector
 
 Use the official MCP Inspector for visual testing and debugging:
 
 ```bash
 # Quick start with Inspector
-./test_with_inspector.sh
+./scripts/test-with-inspector.sh
 
 # Or manually with environment variables
 npx @modelcontextprotocol/inspector \
@@ -198,113 +294,62 @@ npx @modelcontextprotocol/inspector \
 The Inspector provides:
 - **Visual Interface**: Test tools interactively at `http://localhost:6274`
 - **Real-time Monitoring**: View server logs and responses
-- **Configuration Export**: Generate Claude Desktop configurations
-- **CLI Mode**: Automated testing and scripting
 
-### Testing Commands
-
-```bash
-# Test with Inspector UI
-./test_with_inspector.sh
-
-# Test specific tool with CLI
-npx @modelcontextprotocol/inspector --cli \
-  -e TIMECHIMP_API_KEY=your_key \
-  python3 -m timechimp_mcp_server.main \
-  --method tools/call \
-  --tool-name get_projects
-
-# Use configuration file
-npx @modelcontextprotocol/inspector \
-  --config inspector-config.json \
-  --server timechimp-local
-```
-
-For detailed testing instructions, see [MCP_INSPECTOR.md](MCP_INSPECTOR.md).
-
-## Development
-
-### Project Structure
+## Project Structure
 
 ```
-timechimp-mcp-server/
-├── src/
+├── config/                 # Configuration files
+│   └── inspector.json     # MCP Inspector configuration
+├── docs/                  # Documentation
+│   ├── claude-integration.md
+│   ├── mcp-inspector.md
+│   └── usage.md
+├── scripts/               # Utility scripts
+│   ├── start-server.sh    # Server startup (Linux/macOS)
+│   ├── start-server.bat   # Server startup (Windows)
+│   ├── start-server.ps1   # Server startup (PowerShell)
+│   ├── test-with-inspector.sh   # Testing (Linux/macOS)
+│   ├── test-with-inspector.bat  # Testing (Windows)
+│   └── test-with-inspector.ps1  # Testing (PowerShell)
+├── src/                   # Source code
 │   └── timechimp_mcp_server/
 │       ├── __init__.py
-│       ├── main.py          # CLI entry point
-│       └── server.py        # Main server implementation
-├── pyproject.toml           # Project configuration
-├── README.md               # This file
-└── .env.example           # Environment variables example
+│       ├── main.py        # Entry point
+│       └── server.py      # Core MCP server
+├── .env                   # Configuration file (edit with your API key)
+├── install-windows.bat    # Windows installation script
+├── test-installation.bat  # Installation verification script
+├── pyproject.toml         # Project configuration
+├── requirements.txt       # Python dependencies
+└── README.md             # This file
 ```
 
-### Running Tests
+## Windows Troubleshooting
 
-```bash
-pytest
+### Common Issues and Solutions
+
+**1. "Python not found" error:**
+- Install Python from https://www.python.org/downloads/
+- **Important:** Check "Add Python to PATH" during installation
+- Restart Command Prompt after installation
+
+**2. "pip not found" error:**
+- Python 3.4+ includes pip by default
+- If missing, reinstall Python with "Add Python to PATH" checked
+
+**3. PowerShell execution policy error:**
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-### Code Formatting
+**4. "timechimp-mcp-server not found" error:**
+- Run `pip install -e .` in the project directory
+- Or use direct command: `python -m timechimp_mcp_server.main`
 
-```bash
-black src/
-isort src/
-```
+**5. Git clone issues:**
+- Install Git from https://git-scm.com/download/win
+- Or download ZIP from GitHub and extract
 
-### Type Checking
-
-```bash
-mypy src/
-```
-
-## API Reference
-
-### TimeChimp API Integration
-
-This server integrates with the TimeChimp REST API. The following endpoints are used:
-
-- `GET /projects` - Retrieve projects
-- `POST /time-entries` - Create time entries
-- `GET /time-entries` - Retrieve time entries
-- `PATCH /time-entries/{id}` - Update time entries
-- `DELETE /time-entries/{id}` - Delete time entries
-
-### Error Handling
-
-The server includes comprehensive error handling:
-
-- API connection errors are logged and returned as tool errors
-- Invalid parameters are validated and rejected with helpful messages
-- Authentication errors are clearly reported
-- Network timeouts are handled gracefully
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Run the test suite
-6. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Support
-
-For issues and questions:
-
-1. Check the [Issues](https://github.com/your-repo/timechimp-mcp-server/issues) page
-2. Create a new issue with detailed information
-3. Include logs and error messages when reporting bugs
-
-## Changelog
-
-### v0.1.0
-- Initial release
-- Basic time entry management
-- Project retrieval
-- Timer functionality
-- Report generation
-- MCP protocol integration 
+**6. Node.js/npx not found (for MCP Inspector):**
+- Install Node.js from https://nodejs.org/
+- Restart Command Prompt after installation
