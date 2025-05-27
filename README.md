@@ -134,7 +134,7 @@ LOG_LEVEL=INFO
 
 ### Running the Server
 
-Start the MCP server:
+Start the MCP server (runs continuously until stopped):
 
 ```bash
 timechimp-mcp-server
@@ -145,6 +145,8 @@ Or with explicit API key:
 ```bash
 timechimp-mcp-server --api-key your_api_key_here
 ```
+
+**Important:** The server runs continuously and listens for MCP requests via stdio. To stop the server, press `Ctrl+C`.
 
 ### Available Tools
 
@@ -257,10 +259,10 @@ Follow the assistant's documentation for adding MCP servers, using:
 
 **Windows:**
 ```cmd
-# Start the MCP server
+# Start the MCP server (runs continuously)
 scripts\start-server.bat
 
-# Test with MCP Inspector
+# Test with MCP Inspector (interactive testing)
 scripts\test-with-inspector.bat
 
 # Or use PowerShell versions
@@ -270,12 +272,14 @@ scripts\test-with-inspector.ps1
 
 **Linux/macOS:**
 ```bash
-# Start the MCP server
+# Start the MCP server (runs continuously)
 ./scripts/start-server.sh
 
-# Test with MCP Inspector
+# Test with MCP Inspector (interactive testing)
 ./scripts/test-with-inspector.sh
 ```
+
+**Note:** The MCP server runs continuously until you manually stop it with `Ctrl+C`.
 
 ### MCP Inspector
 

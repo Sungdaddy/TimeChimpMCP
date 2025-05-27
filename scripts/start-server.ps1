@@ -2,6 +2,10 @@
 
 Write-Host "🚀 Starting TimeChimp MCP Server..." -ForegroundColor Green
 Write-Host "📁 Working directory: $(Get-Location)" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "⚠️  IMPORTANT: This server will run continuously until you stop it manually." -ForegroundColor Yellow
+Write-Host "   To stop the server, press Ctrl+C in this window." -ForegroundColor Yellow
+Write-Host ""
 
 # Check if .env file exists
 if (Test-Path ".env") {
@@ -25,14 +29,21 @@ if (Test-Path ".env") {
     Write-Host "⚠️  No .env file found. Make sure TIMECHIMP_API_KEY is set in environment." -ForegroundColor Yellow
 }
 
+Write-Host ""
+Write-Host "🌐 Starting MCP server (continuous mode)..." -ForegroundColor Green
+Write-Host "💡 The server is now ready to accept MCP requests via stdio." -ForegroundColor Cyan
+Write-Host "🛑 Press Ctrl+C to stop the server when you're done." -ForegroundColor Yellow
+Write-Host ""
+
 # Try to find the timechimp-mcp-server command
 try {
     $null = Get-Command timechimp-mcp-server -ErrorAction Stop
-    Write-Host "🌐 Starting MCP server on stdio..." -ForegroundColor Green
     & timechimp-mcp-server
 } catch {
-    Write-Host "❌ timechimp-mcp-server not found. Please install with: pip install -e ." -ForegroundColor Red
-    Write-Host "   Or run directly with: python -m timechimp_mcp_server.main" -ForegroundColor Yellow
-    Read-Host "Press Enter to exit"
-    exit 1
-} 
+    Write-Host "⚠️  timechimp-mcp-server command not found, using python module..." -ForegroundColor Yellow
+    & python -m timechimp_mcp_server.main
+}
+
+Write-Host ""
+Write-Host "🛑 Server stopped." -ForegroundColor Red
+Read-Host "Press Enter to exit" 

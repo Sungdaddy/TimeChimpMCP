@@ -535,12 +535,15 @@ class TimeChimpMCPServer:
     async def run(self):
         """Run the MCP server."""
         logger.info("TimeChimp MCP Server starting...")
+        logger.info("Server will run continuously until stopped with Ctrl+C")
+        logger.info("Ready to accept MCP requests via stdio")
         
         while True:
             try:
                 # Read JSON-RPC message from stdin
                 line = await asyncio.get_event_loop().run_in_executor(None, sys.stdin.readline)
                 if not line:
+                    logger.info("EOF received, shutting down...")
                     break
                 
                 line = line.strip()
@@ -568,10 +571,12 @@ class TimeChimpMCPServer:
                 print(response_json, flush=True)
                 
             except KeyboardInterrupt:
-                logger.info("Server shutting down...")
+                logger.info("Received interrupt signal, shutting down...")
                 break
             except Exception as e:
                 logger.error(f"Error in main loop: {e}")
+        
+        logger.info("TimeChimp MCP Server stopped")
 
 async def main():
     """Main entry point."""

@@ -64,9 +64,9 @@ def main(api_key: Optional[str], base_url: str, env_file: Optional[str]) -> None
     try:
         asyncio.run(server.run())
     except KeyboardInterrupt:
-        click.echo("\nServer stopped by user.", err=True)
+        click.echo("\n🛑 Server stopped by user (Ctrl+C).", err=True)
     except Exception as e:
-        click.echo(f"Error running server: {e}", err=True)
+        click.echo(f"❌ Error running server: {e}", err=True)
         sys.exit(1)
 
 

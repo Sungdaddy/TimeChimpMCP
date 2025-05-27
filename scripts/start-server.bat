@@ -3,6 +3,10 @@ REM TimeChimp MCP Server Startup Script for Windows
 
 echo 🚀 Starting TimeChimp MCP Server...
 echo 📁 Working directory: %CD%
+echo.
+echo ⚠️  IMPORTANT: This server will run continuously until you stop it manually.
+echo    To stop the server, press Ctrl+C in this window.
+echo.
 
 REM Check if .env file exists
 if exist ".env" (
@@ -17,14 +21,21 @@ if exist ".env" (
     echo ⚠️  No .env file found. Make sure TIMECHIMP_API_KEY is set in environment.
 )
 
+echo.
+echo 🌐 Starting MCP server (continuous mode)...
+echo 💡 The server is now ready to accept MCP requests via stdio.
+echo 🛑 Press Ctrl+C to stop the server when you're done.
+echo.
+
 REM Try to find the timechimp-mcp-server command
 where timechimp-mcp-server >nul 2>&1
 if %errorlevel% == 0 (
-    echo 🌐 Starting MCP server on stdio...
     timechimp-mcp-server
 ) else (
-    echo ❌ timechimp-mcp-server not found. Please install with: pip install -e .
-    echo    Or run directly with: python -m timechimp_mcp_server.main
-    pause
-    exit /b 1
-) 
+    echo ⚠️  timechimp-mcp-server command not found, using python module...
+    python -m timechimp_mcp_server.main
+)
+
+echo.
+echo 🛑 Server stopped.
+pause 
