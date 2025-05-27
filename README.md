@@ -179,6 +179,49 @@ Follow the assistant's documentation for adding MCP servers, using:
 - Command: `timechimp-mcp-server`
 - Environment variables: `TIMECHIMP_API_KEY`
 
+## Testing and Debugging
+
+### MCP Inspector
+
+Use the official MCP Inspector for visual testing and debugging:
+
+```bash
+# Quick start with Inspector
+./test_with_inspector.sh
+
+# Or manually with environment variables
+npx @modelcontextprotocol/inspector \
+  -e TIMECHIMP_API_KEY=your_api_key \
+  python3 -m timechimp_mcp_server.main
+```
+
+The Inspector provides:
+- **Visual Interface**: Test tools interactively at `http://localhost:6274`
+- **Real-time Monitoring**: View server logs and responses
+- **Configuration Export**: Generate Claude Desktop configurations
+- **CLI Mode**: Automated testing and scripting
+
+### Testing Commands
+
+```bash
+# Test with Inspector UI
+./test_with_inspector.sh
+
+# Test specific tool with CLI
+npx @modelcontextprotocol/inspector --cli \
+  -e TIMECHIMP_API_KEY=your_key \
+  python3 -m timechimp_mcp_server.main \
+  --method tools/call \
+  --tool-name get_projects
+
+# Use configuration file
+npx @modelcontextprotocol/inspector \
+  --config inspector-config.json \
+  --server timechimp-local
+```
+
+For detailed testing instructions, see [MCP_INSPECTOR.md](MCP_INSPECTOR.md).
+
 ## Development
 
 ### Project Structure
