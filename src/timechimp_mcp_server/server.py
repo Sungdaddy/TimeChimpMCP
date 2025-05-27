@@ -157,26 +157,19 @@ class TimeChimpClient:
             logger.error(f"Error deleting time entry: {e}")
             return False
 
-class MCPMessage(BaseModel):
-    """Base MCP message."""
+class MCPRequest(BaseModel):
+    """MCP request message."""
     jsonrpc: str = "2.0"
     id: Optional[Union[str, int]] = None
-
-class MCPRequest(MCPMessage):
-    """MCP request message."""
     method: str
     params: Optional[Dict[str, Any]] = None
 
-class MCPResponse(MCPMessage):
+class MCPResponse(BaseModel):
     """MCP response message."""
+    jsonrpc: str = "2.0"
+    id: Optional[Union[str, int]] = None
     result: Optional[Any] = None
     error: Optional[Dict[str, Any]] = None
-
-class MCPTool(BaseModel):
-    """MCP tool definition."""
-    name: str
-    description: str
-    inputSchema: Dict[str, Any]
 
 class TimeChimpMCPServer:
     """MCP Server for TimeChimp integration."""
@@ -185,13 +178,13 @@ class TimeChimpMCPServer:
         self.client = TimeChimpClient(api_key)
         self.tools = self._get_tools()
     
-    def _get_tools(self) -> List[MCPTool]:
+    def _get_tools(self) -> List[Dict[str, Any]]:
         """Get available tools."""
         return [
-            MCPTool(
-                name="create_time_entry",
-                description="Create a new time entry in TimeChimp",
-                inputSchema={
+            {
+                "name": "create_time_entry",
+                "description": "Create a new time entry in TimeChimp",
+                "inputSchema": {
                     "type": "object",
                     "properties": {
                         "project_id": {"type": "string", "description": "Project ID"},
@@ -199,35 +192,35 @@ class TimeChimpMCPServer:
                         "start_time": {"type": "string", "description": "Start time (ISO format)"},
                         "end_time": {"type": "string", "description": "End time (ISO format, optional)"},
                         "duration_minutes": {"type": "integer", "description": "Duration in minutes (optional)"},
-                        "billable": {"type": "boolean", "description": "Whether entry is billable", "default": True},
+                        "billable": {"type": "boolean", "description": "Whether entry is billable (default: true)"},
                         "tags": {"type": "array", "items": {"type": "string"}, "description": "Tags for the entry"}
                     },
                     "required": ["project_id", "description", "start_time"]
                 }
-            ),
-            MCPTool(
-                name="get_projects",
-                description="Get all available projects from TimeChimp",
-                inputSchema={
+            },
+            {
+                "name": "get_projects",
+                "description": "Retrieve all available projects from TimeChimp",
+                "inputSchema": {
                     "type": "object",
                     "properties": {}
                 }
-            ),
-            MCPTool(
-                name="get_time_entries",
-                description="Get time entries for a specific date range",
-                inputSchema={
+            },
+            {
+                "name": "get_time_entries",
+                "description": "Retrieve time entries for a specific date range",
+                "inputSchema": {
                     "type": "object",
                     "properties": {
-                        "start_date": {"type": "string", "description": "Start date (YYYY-MM-DD)"},
-                        "end_date": {"type": "string", "description": "End date (YYYY-MM-DD)"}
+                        "start_date": {"type": "string", "description": "Start date (YYYY-MM-DD format, optional)"},
+                        "end_date": {"type": "string", "description": "End date (YYYY-MM-DD format, optional)"}
                     }
                 }
-            ),
-            MCPTool(
-                name="update_time_entry",
-                description="Update an existing time entry",
-                inputSchema={
+            },
+            {
+                "name": "update_time_entry",
+                "description": "Update an existing time entry",
+                "inputSchema": {
                     "type": "object",
                     "properties": {
                         "entry_id": {"type": "string", "description": "Time entry ID"},
@@ -238,22 +231,22 @@ class TimeChimpMCPServer:
                     },
                     "required": ["entry_id"]
                 }
-            ),
-            MCPTool(
-                name="delete_time_entry",
-                description="Delete a time entry",
-                inputSchema={
+            },
+            {
+                "name": "delete_time_entry",
+                "description": "Delete a time entry",
+                "inputSchema": {
                     "type": "object",
                     "properties": {
                         "entry_id": {"type": "string", "description": "Time entry ID to delete"}
                     },
                     "required": ["entry_id"]
                 }
-            ),
-            MCPTool(
-                name="start_timer",
-                description="Start a new timer for time tracking",
-                inputSchema={
+            },
+            {
+                "name": "start_timer",
+                "description": "Start a new timer for time tracking",
+                "inputSchema": {
                     "type": "object",
                     "properties": {
                         "project_id": {"type": "string", "description": "Project ID"},
@@ -262,44 +255,64 @@ class TimeChimpMCPServer:
                     },
                     "required": ["project_id", "description"]
                 }
-            ),
-            MCPTool(
-                name="stop_timer",
-                description="Stop the currently running timer",
-                inputSchema={
+            },
+            {
+                "name": "stop_timer",
+                "description": "Stop a currently running timer",
+                "inputSchema": {
                     "type": "object",
                     "properties": {
                         "entry_id": {"type": "string", "description": "Timer entry ID to stop"}
                     },
                     "required": ["entry_id"]
                 }
-            ),
-            MCPTool(
-                name="generate_time_report",
-                description="Generate a time tracking report for a date range",
-                inputSchema={
+            },
+            {
+                "name": "generate_time_report",
+                "description": "Generate a comprehensive time tracking report for a date range",
+                "inputSchema": {
                     "type": "object",
                     "properties": {
-                        "start_date": {"type": "string", "description": "Start date (YYYY-MM-DD)"},
-                        "end_date": {"type": "string", "description": "End date (YYYY-MM-DD)"},
+                        "start_date": {"type": "string", "description": "Start date (YYYY-MM-DD format)"},
+                        "end_date": {"type": "string", "description": "End date (YYYY-MM-DD format)"},
                         "project_id": {"type": "string", "description": "Optional project ID filter"}
                     },
                     "required": ["start_date", "end_date"]
                 }
-            )
+            }
         ]
     
     async def handle_request(self, request: MCPRequest) -> MCPResponse:
         """Handle MCP request."""
         try:
-            if request.method == "tools/list":
+            if request.method == "initialize":
                 return MCPResponse(
                     id=request.id,
                     result={
-                        "tools": [tool.model_dump() for tool in self.tools]
+                        "protocolVersion": "2024-11-05",
+                        "capabilities": {
+                            "tools": {}
+                        },
+                        "serverInfo": {
+                            "name": "timechimp-mcp-server",
+                            "version": "0.1.0"
+                        }
+                    }
+                )
+            elif request.method == "tools/list":
+                return MCPResponse(
+                    id=request.id,
+                    result={
+                        "tools": self.tools
                     }
                 )
             elif request.method == "tools/call":
+                if not request.params:
+                    return MCPResponse(
+                        id=request.id,
+                        error={"code": -32602, "message": "Missing parameters"}
+                    )
+                
                 tool_name = request.params.get("name")
                 arguments = request.params.get("arguments", {})
                 
@@ -326,19 +339,10 @@ class TimeChimpMCPServer:
                     )
                 
                 return MCPResponse(id=request.id, result=result)
-            elif request.method == "initialize":
+            elif request.method == "ping":
                 return MCPResponse(
                     id=request.id,
-                    result={
-                        "protocolVersion": "2024-11-05",
-                        "capabilities": {
-                            "tools": {}
-                        },
-                        "serverInfo": {
-                            "name": "timechimp-mcp-server",
-                            "version": "0.1.0"
-                        }
-                    }
+                    result={}
                 )
             else:
                 return MCPResponse(
@@ -530,7 +534,7 @@ class TimeChimpMCPServer:
     
     async def run(self):
         """Run the MCP server."""
-        logger.info("Starting TimeChimp MCP Server...")
+        logger.info("TimeChimp MCP Server starting...")
         
         while True:
             try:
@@ -539,12 +543,21 @@ class TimeChimpMCPServer:
                 if not line:
                     break
                 
+                line = line.strip()
+                if not line:
+                    continue
+                
                 # Parse request
                 try:
-                    request_data = json.loads(line.strip())
+                    request_data = json.loads(line)
                     request = MCPRequest(**request_data)
                 except (json.JSONDecodeError, ValueError) as e:
                     logger.error(f"Invalid request: {e}")
+                    error_response = MCPResponse(
+                        id=None,
+                        error={"code": -32700, "message": f"Parse error: {str(e)}"}
+                    )
+                    print(json.dumps(error_response.model_dump(exclude_none=True)), flush=True)
                     continue
                 
                 # Handle request
@@ -555,6 +568,7 @@ class TimeChimpMCPServer:
                 print(response_json, flush=True)
                 
             except KeyboardInterrupt:
+                logger.info("Server shutting down...")
                 break
             except Exception as e:
                 logger.error(f"Error in main loop: {e}")
