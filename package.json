@@ -1,0 +1,38 @@
+{
+  "name": "timechimp-mcp-server",
+  "version": "0.1.0",
+  "description": "A Model Context Protocol (MCP) server for TimeChimp API v2",
+  "type": "module",
+  "main": "timechimp-mcp-server.js",
+  "bin": {
+    "timechimp-mcp-server": "./timechimp-mcp-server.js"
+  },
+  "scripts": {
+    "start": "node timechimp-mcp-server.js",
+    "dev": "node --inspect timechimp-mcp-server.js",
+    "test": "node test-server.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "timechimp",
+    "time-tracking",
+    "api"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/timechimp-mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/timechimp-mcp-server/issues"
+  },
+  "homepage": "https://github.com/yourusername/timechimp-mcp-server#readme"
+} 
